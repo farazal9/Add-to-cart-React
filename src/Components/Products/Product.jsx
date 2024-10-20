@@ -54,19 +54,12 @@ const Product = () => {
 
         if(!isExist){
             setCartList((prev)=>[...prev,product])
-            
-            let strCartList  = JSON.stringify(cartList)
-
-            localStorage.setItem("cartList",strCartList)
+  
         }else{
            setOpenAlert(true)
         }
 
     }
-
-
-
-
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -76,6 +69,17 @@ const Product = () => {
         setOpenAlert(false);
       };
     
+
+      useEffect(()=>{
+
+let LocalItem = localStorage.getItem("cartList")
+        
+        let strCartList  = JSON.stringify(cartList)
+
+        localStorage.setItem("cartList",strCartList)
+      },[cartList])
+
+
 
       const action = (
         <React.Fragment>
