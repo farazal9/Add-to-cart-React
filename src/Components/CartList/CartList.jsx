@@ -1,4 +1,5 @@
 
+import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import { useEffect, useState } from 'react';
@@ -16,24 +17,42 @@ const CartList =(props) => {
 
 useEffect(()=>{
   const cartItemsArr =  localStorage.getItem("cartList")
-  setcartItems(cartItemsArr);
+const parseCartItemsArr = JSON.parse(cartItemsArr)
+
+
+
+
+
+  setcartItems(parseCartItemsArr);
   
 },[])
 
 
 
-  const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-      
-    
-    </Box>
-  );
+
 
   return (
     <div>
 
       <Drawer open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
+      <Box 
+      sx={{ width: 250 }}
+       role="presentation" onClick={toggleDrawer(false)}>
+
+
+        <Typography variant='h4' > Cart Items</Typography>
+      
+    {
+      cartItems?.map((item)=>{
+        return<Box>
+          <img width="70px" src={item.img} alt="" />
+          <span>{item.name}</span>
+          <span>{item.price}</span>
+          </Box>
+    
+      })
+    }
+      </Box>
       </Drawer>
     </div>
   );

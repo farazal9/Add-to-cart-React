@@ -17,6 +17,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import CartList from '../CartList/CartList';
+import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -61,6 +63,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [cartItems,setcartItems] = React.useState([])
+// console.log(cartItems?.length,"cartItems");
 
 
   const [open, setOpen] = React.useState(false);
@@ -108,7 +112,9 @@ export default function Header() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+      <Link to="/sign-in">My account</Link>
+      </MenuItem>
     </Menu>
   );
 
@@ -164,7 +170,23 @@ export default function Header() {
     </Menu>
   );
 
+ 
+useEffect(()=>{
+  const cartItemsArr =  localStorage.getItem("cartList")
+const parseCartItemsArr = JSON.parse(cartItemsArr)
+
+
+
+
+
+  setcartItems(parseCartItemsArr);
+  
+},[])
+
+
   return (
+
+
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
@@ -185,7 +207,7 @@ export default function Header() {
           >
             MUI
           </Typography>
-          <Search>
+          {/* <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -193,11 +215,11 @@ export default function Header() {
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
             />
-          </Search>
+          </Search> */}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="error">
+              <Badge badgeContent={cartItems?.length} color="error">
               <ShoppingCartIcon onClick={toggleDrawer(true)} />
               </Badge>
             </IconButton>
