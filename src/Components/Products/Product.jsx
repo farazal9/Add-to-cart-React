@@ -8,17 +8,26 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from 'axios'
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
+import Autocomplete from '@mui/material/Autocomplete';
+
 
 
 
 
 const Product = () => {
 
-const [cartList, setCartList] = useState([]);
-const [openAlert, setOpenAlert] = useState(false)
-const [products, setProducts] = useState([])
-const [isLoading,setIsLoading] = useState(false)
-const navigate = useNavigate();
+  const [cartList, setCartList] = useState([]);
+  const [openAlert, setOpenAlert] = useState(false)
+  const [allProducts,setAllProducts] = useState([])
+  const [products, setProducts] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [categoryOptions , setCategoryOptions ] = useState([])
+  const [categoryFilter,setCategoryFilter] =  useState({})
+
+  const navigate = useNavigate();
+
+
+  const options = ['Mens Cotton Jacket', 'Mens Casual', 'DANVOUY Womens'];
 
 
   console.log(isLoading, "isloading");
@@ -77,9 +86,28 @@ const navigate = useNavigate();
         const products = await axios.get("https://fakestoreapi.com/products");
 
 
-        if(products.status === 200){
+        if (products.status === 200) {
           setIsLoading(false);
           setProducts(products?.data)
+          setAllProducts(products?.data)
+
+          const filterCategories = products?.data?.map((product) => {
+            return {
+              label: product.category,
+              value: product.category,
+
+            };
+          });
+
+
+          const uniqueCategories = filterCategories.filter(
+            (item, index, self) =>
+              index === self.findIndex((t) => t.value === item.value)
+          );
+
+          setCategoryOptions(uniqueCategories)
+
+
         } else {
           setIsLoading(true)
         }
@@ -92,15 +120,33 @@ const navigate = useNavigate();
   }, []);
 
 
+  useEffect(()=>{
+    let filterProducts =  allProducts?.filter((product)=> product?.category === categoryFilter?.value)
+    setProducts(filterProducts)
+    console.log(filterProducts,"filterProducts");
+    
+  },[categoryFilter])
 
 
   return (
     <>
 
 
-      <Box className="container mt-5">
+      <Box className="d-flex justify-content-between container mt-5 px-5">
 
         <TextField onChange={searchHandler} size='small' placeholder='Search Items...' />
+
+
+        <Autocomplete
+        onChange={(e,newValue)=>{
+          setCategoryFilter(newValue);
+        }}
+          size='small'
+          disablePortal
+          options={categoryOptions}
+          sx={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Categories" />}
+        />
       </Box>
 
       <Snackbar
@@ -128,61 +174,61 @@ const navigate = useNavigate();
 
       </Snackbar>
       <Container>
-        { isLoading ? (
+        {isLoading ? (
 
-<Box className="text-center my-5">
+          <Box className="text-center my-5">
 
 
-<CircularProgress /> 
-</Box>
+            <CircularProgress />
+          </Box>
         )
-         : <Grid  container spacing={4} justifyContent="center">
-          {products?.map((product, index) => (
-            <Grid item key={index} xs={12} md={3}>
-              <Card className="py-3 px-4 mt-5" sx={{ cursor: "pointer" }}>
-                <Box className="text-center">
-                  <img
-                    style={{ maxHeight: "150px", minHeight: "150px" }}
-                    width={100}
-                    className="img-fluid"
-                    src={product?.image}
-                    alt={product.name}
-                  />
-                  <Tooltip placement="top" title={product?.title}>
-                    <Typography variant="h6">
-                      {product?.title?.length > 18 ? `${product?.title.slice(0, 15)}...` : product.title}
-                    </Typography>
-                  </Tooltip>
-                  <Divider sx={{ borderColor: "black" }} />
-                  <Box className="d-flex justify-content-between mt-2">
-                    <Tooltip title="Product Details">
-                      <VisibilityIcon  onClick={()=>{
-                        navigate(`/product-details/${product?.id}`);
-                        console.log(product);
-                        
-                        
-                      }} />
+          : <Grid container spacing={4} justifyContent="center">
+            {products?.map((product, index) => (
+              <Grid item key={index} xs={12} md={3} >
+                <Card className="py-3 px-4 mt-5" sx={{ cursor: "pointer" }}>
+                  <Box className="text-center">
+                    <img
+                      style={{ maxHeight: "150px", minHeight: "150px" }}
+                      width={100}
+                      className="img-fluid"
+                      src={product?.image}
+                      alt={product.name}
+                    />
+                    <Tooltip placement="top" title={product?.title}>
+                      <Typography variant="h6">
+                        {product?.title?.length > 18 ? `${product?.title.slice(0, 15)}...` : product.title}
+                      </Typography>
                     </Tooltip>
+                    <Divider sx={{ borderColor: "black" }} />
+                    <Box className="d-flex justify-content-between mt-2">
+                      <Tooltip title="Product Details">
+                        <VisibilityIcon onClick={() => {
+                          navigate(`/product-details/${product?.id}`);
+                          console.log(product);
 
 
-                    <Tooltip title="Add to Favorite">
-                      <FavoriteIcon />
-                    </Tooltip>
+                        }} />
+                      </Tooltip>
 
 
-                    <Tooltip title="Add to Cart">
+                      <Tooltip title="Add to Favorite">
+                        <FavoriteIcon />
+                      </Tooltip>
 
-                      <ShoppingCartIcon onClick={() => cartHandler(product)} />
 
-                    </Tooltip>
+                      <Tooltip title="Add to Cart">
 
+                        <ShoppingCartIcon onClick={() => cartHandler(product)} />
+
+                      </Tooltip>
+
+                    </Box>
                   </Box>
-                </Box>
-              </Card>
-            </Grid>
-          ))}
+                </Card>
+              </Grid>
+            ))}
 
-        </Grid>}
+          </Grid>}
       </Container>
 
 
