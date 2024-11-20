@@ -9,6 +9,8 @@ import axios from 'axios'
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../Slices/Add Cart/AddCartSlice';
 
 
 
@@ -25,7 +27,7 @@ const Product = () => {
   const [categoryFilter,setCategoryFilter] =  useState({})
 
   const navigate = useNavigate();
-
+  const dispatch = useDispatch()
 
   const options = ['Mens Cotton Jacket', 'Mens Casual', 'DANVOUY Womens'];
 
@@ -218,7 +220,7 @@ const Product = () => {
 
                       <Tooltip title="Add to Cart">
 
-                        <ShoppingCartIcon onClick={() => cartHandler(product)} />
+                        <ShoppingCartIcon onClick={()=>dispatch(addToCart())} />
 
                       </Tooltip>
 

@@ -8,6 +8,8 @@ import Signup from './Components/auth/Signin/Signup/Signup';
 import Error from './Components/error-page/Error';
 import ProductDetails from './Components/Product-details/ProductDetails';
 import Layout from './Components/Layout/Layout';
+import { Provider } from 'react-redux'
+import { store } from './Store';
 
 const router = createBrowserRouter([
 {
@@ -43,6 +45,14 @@ element:<App/>
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<RouterProvider router={router} />);
+
+root.render(
+    <Provider store={store}>
+<RouterProvider router={router} />
+
+    </Provider>
+
+
+);
 
 

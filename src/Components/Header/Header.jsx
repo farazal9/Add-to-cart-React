@@ -19,6 +19,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import CartList from '../CartList/CartList';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -64,7 +65,9 @@ export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [cartItems,setcartItems] = React.useState([])
-// console.log(cartItems?.length,"cartItems");
+const count = useSelector((state)=> state.counter)
+
+console.log(count,"count");
 
 
   const [open, setOpen] = React.useState(false);
@@ -219,7 +222,7 @@ const parseCartItemsArr = JSON.parse(cartItemsArr)
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={cartItems?.length} color="error">
+              <Badge badgeContent={count?.value} color="error">
               <ShoppingCartIcon onClick={toggleDrawer(true)} />
               </Badge>
             </IconButton>
