@@ -9,8 +9,9 @@ import axios from 'axios'
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../../Slices/Add Cart/AddCartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProduct } from '../../Slices/Add Cart/ProductSlice/ProductSlice';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -20,19 +21,21 @@ const Product = () => {
 
   const [cartList, setCartList] = useState([]);
   const [openAlert, setOpenAlert] = useState(false)
-  const [allProducts,setAllProducts] = useState([])
+  const [allProducts, setAllProducts] = useState([])
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(false)
-  const [categoryOptions , setCategoryOptions ] = useState([])
-  const [categoryFilter,setCategoryFilter] =  useState({})
+  const [categoryOptions, setCategoryOptions] = useState([])
+  const [categoryFilter, setCategoryFilter] = useState({})
 
   const navigate = useNavigate();
+
+  const { IsToast} = useSelector(state => state.products)
   const dispatch = useDispatch()
 
   const options = ['Mens Cotton Jacket', 'Mens Casual', 'DANVOUY Womens'];
 
 
-  console.log(isLoading, "isloading");
+  console.log( IsToast, "toast");
 
 
   const cartHandler = (product) => {
@@ -122,27 +125,35 @@ const Product = () => {
   }, []);
 
 
-  useEffect(()=>{
-    let filterProducts =  allProducts?.filter((product)=> product?.category === categoryFilter?.value)
+  useEffect(() => {
+
+    let filterProducts = allProducts?.filter((product) => product?.category === categoryFilter?.value)
     setProducts(filterProducts)
-    console.log(filterProducts,"filterProducts");
-    
-  },[categoryFilter])
+    console.log(filterProducts, "filterProducts");
+
+  }, [categoryFilter])
 
 
+  useEffect(()=>{
+    if( IsToast){
+      toast("product already added")
+    }
+  },[ IsToast])
   return (
     <>
-
+      
+      <ToastContainer />
 
       <Box className="d-flex justify-content-between container mt-5 px-5">
+
 
         <TextField onChange={searchHandler} size='small' placeholder='Search Items...' />
 
 
         <Autocomplete
-        onChange={(e,newValue)=>{
-          setCategoryFilter(newValue);
-        }}
+          onChange={(e, newValue) => {
+            setCategoryFilter(newValue);
+          }}
           size='small'
           disablePortal
           options={categoryOptions}
@@ -186,6 +197,7 @@ const Product = () => {
         )
           : <Grid container spacing={4} justifyContent="center">
             {products?.map((product, index) => (
+             
               <Grid item key={index} xs={12} md={3} >
                 <Card className="py-3 px-4 mt-5" sx={{ cursor: "pointer" }}>
                   <Box className="text-center">
@@ -220,7 +232,7 @@ const Product = () => {
 
                       <Tooltip title="Add to Cart">
 
-                        <ShoppingCartIcon onClick={()=>dispatch(addToCart())} />
+                        <ShoppingCartIcon onClick={() => dispatch(addProduct(product))} />
 
                       </Tooltip>
 
