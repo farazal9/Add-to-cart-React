@@ -65,9 +65,9 @@ export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [cartItems,setcartItems] = React.useState([])
-const count = useSelector((state)=> state.counter)
+const {items} = useSelector((state)=> state.products)
 
-console.log(count,"count");
+
 
 
   const [open, setOpen] = React.useState(false);
@@ -222,7 +222,7 @@ const parseCartItemsArr = JSON.parse(cartItemsArr)
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={count?.value} color="error">
+              <Badge badgeContent={items?.length} color="error">
               <ShoppingCartIcon onClick={toggleDrawer(true)} />
               </Badge>
             </IconButton>

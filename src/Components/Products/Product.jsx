@@ -10,11 +10,18 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProduct } from '../../Slices/Add Cart/ProductSlice/ProductSlice';
+import { addProduct, resetToast } from '../../Slices/Add Cart/ProductSlice/ProductSlice';
 import { ToastContainer, toast } from 'react-toastify';
 
 
-
+// import Swiper and modules styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+// Import Swiper React components
+import { SwiperSlide, Swiper } from "swiper/react";
+// import required modules
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
 
 const Product = () => {
@@ -29,13 +36,13 @@ const Product = () => {
 
   const navigate = useNavigate();
 
-  const { IsToast} = useSelector(state => state.products)
+  const { IsToast } = useSelector(state => state.products)
   const dispatch = useDispatch()
 
   const options = ['Mens Cotton Jacket', 'Mens Casual', 'DANVOUY Womens'];
 
 
-  console.log( IsToast, "toast");
+
 
 
   const cartHandler = (product) => {
@@ -76,7 +83,7 @@ const Product = () => {
       <IconButton
         size="small"
         aria-label="close"
-        color="inherit"
+        color="inherit" y
         onClick={handleClose}
       >
         <CloseIcon fontSize="small" />
@@ -134,14 +141,18 @@ const Product = () => {
   }, [categoryFilter])
 
 
-  useEffect(()=>{
-    if( IsToast){
+  useEffect(() => {
+    if (IsToast) {
       toast("product already added")
+
+      setTimeout(() => {
+        dispatch(resetToast());
+      }, 1000);
     }
-  },[ IsToast])
+  }, [IsToast])
   return (
     <>
-      
+
       <ToastContainer />
 
       <Box className="d-flex justify-content-between container mt-5 px-5">
@@ -197,17 +208,45 @@ const Product = () => {
         )
           : <Grid container spacing={4} justifyContent="center">
             {products?.map((product, index) => (
-             
-              <Grid item key={index} xs={12} md={3} >
+
+              <Grid item key={index} xs={6} md={3} >
                 <Card className="py-3 px-4 mt-5" sx={{ cursor: "pointer" }}>
                   <Box className="text-center">
-                    <img
-                      style={{ maxHeight: "150px", minHeight: "150px" }}
-                      width={100}
-                      className="img-fluid"
-                      src={product?.image}
-                      alt={product.name}
-                    />
+                    <Swiper className="mySwiper"
+                       spaceBetween={30}
+                       centeredSlides={true}
+                       autoplay={{
+                         delay: 2500,
+                         disableOnInteraction: false,
+                       }}
+                       pagination={{
+                         clickable: true,
+                       }}
+                   
+                       modules={[Autoplay, Pagination, Navigation]}
+                   
+                     >
+                      <SwiperSlide>
+                        <img
+                          style={{ maxHeight: "150px", minHeight: "150px" }}
+                          width={100}
+                          className="img-fluid"
+                          src={product?.image}
+                          alt={product.name}
+                        />
+                      </SwiperSlide>
+                      <SwiperSlide>
+                        <img
+                          style={{ maxHeight: "150px", minHeight: "150px" }}
+                          width={100}
+                          className="img-fluid"
+                          src={product?.image}
+                          alt={product.name}
+                        />
+                      </SwiperSlide>
+
+                    </Swiper>
+
                     <Tooltip placement="top" title={product?.title}>
                       <Typography variant="h6">
                         {product?.title?.length > 18 ? `${product?.title.slice(0, 15)}...` : product.title}

@@ -25,12 +25,16 @@ const productSlice = createSlice({
 
         },
 
+resetToast (state) {
+    state.IsToast = false;
+},
+
         increaseQuantity: (state, action) => {
             const product = state.items.find((item) => item.id === action.payload.id);
             if (product) {
                 product.quantity += 1;
             }
-    
+
 
         },
 
@@ -38,14 +42,28 @@ const productSlice = createSlice({
             const product = state.items.find((item) => item.id === action.payload.id);
             if (product && product.quantity > 1) {
                 product.quantity -= 1;
-            }else{
-              state.items = state.items.filter(item=>item.id !== action.payload.id)
+            } else {
+                state.items = state.items.filter(item => item.id !== action.payload.id)
             }
-         
 
-        }
+
+        },
+
+
+        removeItem: (state, action) => {
+
+            state.items = state.items.filter((item) => item?.id !== action.payload.id)
+        },
+
+
+
     },
 });
 
-export const { addProduct, increaseQuantity, decreaseQuantity } = productSlice.actions;
+
+export const  selectTotalPrice =  (state) =>{
+    return state.products.items.reduce((total,item) => total + item?.price * item?.quantity ,0  )
+};
+
+export const { addProduct, increaseQuantity, decreaseQuantity, removeItem , resetToast} = productSlice.actions;
 export default productSlice.reducer;
